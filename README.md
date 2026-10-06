@@ -1,7 +1,7 @@
 # নথি Builder (AI DevFest 2026)
 
 **Name:** Md. Ashraful Alam Shuvo
-**Live Website:** [LIVE_URL]
+**Live Website:** https://nothi-builder.netlify.app
 
 ## App Instructions
 
@@ -35,7 +35,7 @@
 
 ## Most Useful Prompt
 
-handle the errors according to the given instructions. 
+handle the errors according to the given instructions.
 especially focus on the deadline. if everything is perfect and working accordingly then dont need to change or do anythiong.
 
 ## How to Run
