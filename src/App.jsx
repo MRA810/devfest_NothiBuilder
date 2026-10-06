@@ -107,6 +107,13 @@ export default function App() {
       const j = JSON.parse(await f.text());
       if (!j.tender?.tender_id || !Array.isArray(j.requirements))
         throw new Error("bad");
+      // Deadline must be a real YYYY-MM-DD date, otherwise expiry checks silently never fire
+      const dl = String(j.tender.submission_deadline ?? "").trim().slice(0, 10);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(dl) || isNaN(Date.parse(dl)))
+        throw new Error("bad");
+      j.tender.submission_deadline = dl;
+      if (j.requirements.some((r) => !r || r.id == null || isNaN(Number(r.order))))
+        throw new Error("bad");
       setData(j);
       setMatch({});
       setExpiry({});
@@ -143,18 +150,23 @@ export default function App() {
   }
 
   const removeFile = (fid) => {
+    const rid = usedBy(fid);
+    if (rid) setExpiry((m) => { const n = { ...m }; delete n[rid]; return n; });
     setFiles((p) => p.filter((f) => f.id !== fid));
     setMatch((m) =>
       Object.fromEntries(Object.entries(m).filter(([, v]) => v !== fid)),
     );
   };
-  const assign = (rid, fid) =>
+  const assign = (rid, fid) => {
+    if (fid !== match[rid])
+      setExpiry((m) => { const n = { ...m }; delete n[rid]; return n; });
     setMatch((m) => {
       const n = { ...m };
       if (fid) n[rid] = fid;
       else delete n[rid];
       return n;
     });
+  };
   const optState = (f, rid) => {
     const u = usedBy(f.id);
     if (u && u !== rid) return t.used;
@@ -189,7 +201,7 @@ export default function App() {
     const q = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
     const lines = [
       t.csvHead,
-      ...rows.map((x) => [name(x.r), x.f?.name, x.f?.pages, x.e, t.st[x.s]]),
+      ...rows.map((x) => [name(x.r), x.f?.name, x.f?.pages, x.r.has_expiry ? x.e : "", t.st[x.s]]),
     ];
     const blob = new Blob(
       ["\ufeff" + lines.map((l) => l.map(q).join(",")).join("\n")],

@@ -51,7 +51,7 @@ export async function buildPackage(tender, items, withIndex) {
     ['Tender ID', tender.tender_id], ['Tender title', tender.title],
     ['Procuring entity', tender.procuring_entity], ['Bidder', tender.bidder],
     ['Submission deadline', tender.submission_deadline],
-    ['Package made on', new Date().toISOString().slice(0, 10)],
+    ['Package made on', (() => { const d = new Date(), z = (n) => String(n).padStart(2, '0'); return `${d.getFullYear()}-${z(d.getMonth() + 1)}-${z(d.getDate())}`; })()],
   ];
   let y = H - 160;
   info.forEach(([k, v]) => {
@@ -63,10 +63,11 @@ export async function buildPackage(tender, items, withIndex) {
   text(p, 'Included documents (in order)', 50, y, 14, bold, navy);
   y -= 8; p.drawLine({ start: { x: 50, y }, end: { x: W - 50, y }, thickness: 1, color: navy });
   y -= 22;
+  const gap = Math.max(11, Math.min(20, (y - 40) / Math.max(rows.length, 1)));
   rows.forEach((r, i) => {
     text(p, `${i + 1}.`, 56, y, 11, bold);
     text(p, fit(r.title, font, 11, W - 180), 82, y, 11);
-    y -= 20;
+    y -= gap;
   });
 
   // Index
@@ -78,10 +79,11 @@ export async function buildPackage(tender, items, withIndex) {
     text(p, 'Pages', 400, y, 11, bold, navy); text(p, 'Starts on page', 460, y, 11, bold, navy);
     y -= 8; p.drawLine({ start: { x: 50, y }, end: { x: W - 50, y }, thickness: 1, color: navy });
     y -= 22;
+    const gap2 = Math.max(11, Math.min(22, (y - 40) / Math.max(rows.length, 1)));
     rows.forEach((r, i) => {
       text(p, String(i + 1), 56, y); text(p, fit(r.title, font, 11, 280), 100, y);
       text(p, String(r.file.pages), 410, y); text(p, String(r.start), 490, y);
-      y -= 22;
+      y -= gap2;
     });
   }
 
