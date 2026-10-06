@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { inspect, buildPackage } from "./pdfutil";
 import { T } from "./i18n";
-import Welcome, { TearOverlay, ThemeBtn, Ticker } from "./Welcome";
+import Welcome, { TearOverlay, ThemeBtn, Ticker, PixelWave } from "./Welcome";
 
 const ST = {
   missing: ["bad", "bi-x-octagon-fill"],
@@ -220,6 +220,7 @@ export default function App() {
   return (
     <>
       {screen === "tearing" && <TearOverlay {...welcomeProps} />}
+      <PixelWave fixed />
       <div className="bubbles" aria-hidden="true">
         {[
           [-6, 62, 230, 0],

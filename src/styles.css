@@ -1,17 +1,16 @@
 /* ============================================================
    নথি Builder — Frutiger Aero (aqua-green / teal, a touch of purple)
-   + neon green / gray / black / orange maximalism + Dorfic hex tiles
+   + neon green / gray / black / orange maximalism
    Two themes only: light + dark (data-theme on <html>)
    ============================================================ */
 :root{
-  --hexurl:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100' viewBox='0 0 56 100'%3E%3Cpath d='M28 0L56 16V50L28 66L0 50V16Z M28 66V100' fill='none' stroke='%23ffffff' stroke-width='1.5'/%3E%3C/svg%3E");
   --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
   --neon:#39ff14; --orange:#ff7a1a; --purple:#8b6fe6; --gray:#7c8a92; --black:#0a0f12;
   --bg-a:#e3fbf4; --bg-b:#9be8dc; --bg-c:#4fb8c9;
   --ink:#06303a; --h-ink:#05505a; --accent2:#0a9d4a;
   --glass-a:#ffffffc4; --glass-b:#ffffff45; --glass-c:#5fe0d02e;
   --line:#ffffffd0; --shadow:#0a5f6a50; --hard:#0a0f12cc; --edge:#0a0f12;
-  --field:#ffffffe6; --field-ink:#06303a; --tile:#ffffff40; --paper:#f6f1e3; --hex-o:.55;
+  --field:#ffffffe6; --field-ink:#06303a; --tile:#ffffff40; --paper:#f6f1e3;
   --hero-a:#1fd3b4; --hero-b:#0a8f9e; --hero-c:#4b5fc4;
   --w1:#8bf5d0; --w2:#12b3bd; --w3:#0a7f9a;
   color-scheme:light;
@@ -21,7 +20,7 @@
   --ink:#e4fff7; --h-ink:#7dfbe0; --accent2:#39ff14;
   --glass-a:#ffffff20; --glass-b:#ffffff0a; --glass-c:#0fb5ae26;
   --line:#ffffff2e; --shadow:#000000b0; --hard:#39ff1499; --edge:#0a0f12;
-  --field:#0b1417ea; --field-ink:#e4fff7; --tile:#ffffff10; --paper:#1b2427; --hex-o:.12;
+  --field:#0b1417ea; --field-ink:#e4fff7; --tile:#ffffff10; --paper:#1b2427;
   --hero-a:#0b5a58; --hero-b:#07343d; --hero-c:#1f1a52;
   --w1:#06302f; --w2:#07434c; --w3:#0b1a2a;
   color-scheme:dark;
@@ -35,7 +34,6 @@ body{margin:0;min-height:100vh;color:var(--ink);font-family:"Nunito","Hind Silig
     radial-gradient(circle at 92% 18%,#8b6fe650 0,transparent 24%),
     radial-gradient(circle at 70% 100%,#ff7a1a30 0,transparent 30%),
     linear-gradient(170deg,var(--bg-a),var(--bg-b) 55%,var(--bg-c)) fixed}
-body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background-image:var(--hexurl);background-size:56px 100px;opacity:var(--hex-o)}
 body::after{content:"";position:fixed;inset:0;z-index:300;pointer-events:none;background-image:var(--grain);opacity:.07;mix-blend-mode:overlay}
 
 @keyframes float{50%{transform:translate(12px,-28px)}}
@@ -150,17 +148,9 @@ select{flex:1;min-width:180px}
     linear-gradient(160deg,var(--w1),var(--w2) 58%,var(--w3))}
 .welcome.ghost{position:absolute}
 .w-layer{position:absolute;inset:0;pointer-events:none}
-.w-hex{background-image:var(--hexurl);background-size:56px 100px;opacity:.35}
 .w-grid{background-image:linear-gradient(#ffffff16 1px,transparent 1px),linear-gradient(90deg,#ffffff16 1px,transparent 1px);background-size:44px 44px;
   -webkit-mask-image:radial-gradient(ellipse at center,#000 25%,transparent 78%);mask-image:radial-gradient(ellipse at center,#000 25%,transparent 78%)}
 .w-rings{background:repeating-radial-gradient(circle at 50% 52%,transparent 0 52px,#ffffff1c 52px 54px)}
-.hx{position:absolute;z-index:1;pointer-events:none;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);animation:float 9s ease-in-out infinite}
-.hx::before{content:"";position:absolute;inset:0;background:linear-gradient(160deg,#ffffffaa,#ffffff00 45%)}
-.hx-n{background:linear-gradient(160deg,#eaffb8,var(--neon) 60%,#17a80c)}
-.hx-o{background:linear-gradient(160deg,#ffd29a,var(--orange) 60%,#c2480a)}
-.hx-g{background:linear-gradient(160deg,#d5dde1,var(--gray) 60%,#4a565d)}
-.hx-k{background:linear-gradient(160deg,#4a5a63,var(--black) 60%)}
-.hx-t{background:linear-gradient(160deg,#ffffff90,#ffffff30 60%,#ffffff18);box-shadow:inset 0 0 0 3px #ffffffaa}
 .w-top{position:relative;z-index:3;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:18px 22px}
 .w-ctl{display:flex;gap:10px;flex-wrap:wrap}
 .w-badge{display:inline-flex;gap:8px;align-items:center;background:var(--black);color:var(--neon);font-weight:800;font-size:.8rem;letter-spacing:.18em;padding:8px 14px;border:2px solid var(--neon);box-shadow:4px 4px 0 var(--orange)}
@@ -174,6 +164,9 @@ select{flex:1;min-width:180px}
 .w-go{margin-top:28px;font-size:clamp(1.3rem,3.4vw,2.1rem);padding:18px 48px;box-shadow:5px 5px 0 var(--black),0 12px 30px var(--shadow);animation:pulse 2.2s infinite}
 .w-go i{animation:nudge 1.4s ease-in-out infinite}
 .w-stripes{position:relative;z-index:3}
+
+.pixwave{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+.pixwave.fixed{position:fixed;z-index:0}
 
 /* ---------- Page tear + bubble burst ---------- */
 .tear{position:fixed;inset:0;z-index:100;overflow:hidden}

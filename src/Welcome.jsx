@@ -1,4 +1,77 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+
+/* ---------- Pixel wave (sweeps across the screen every few seconds) ---------- */
+// A wave of little pixel squares sweeps across the screen every so often.
+const CELL = 26;        // pixel size (px)
+const FIRST = 4000;     // wait before the first wave (ms)
+const EVERY = 10000;    // pause between waves (ms)
+const DUR = 3400;       // how long one sweep takes (ms)
+const COLORS = ["#39ff14", "#ffffff", "#12b3bd", "#8bf5d0"];
+
+export function PixelWave({ fixed = false }) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+    const cv = ref.current;
+    const ctx = cv.getContext("2d");
+    let W = 0, H = 0, raf = 0, timer = 0, dead = false;
+
+    const size = () => {
+      const r = cv.getBoundingClientRect();
+      const d = Math.min(window.devicePixelRatio || 1, 2);
+      W = r.width; H = r.height;
+      cv.width = W * d; cv.height = H * d;
+      ctx.setTransform(d, 0, 0, d, 0, 0);
+    };
+    size();
+    window.addEventListener("resize", size);
+
+    const run = () => {
+      if (dead) return;
+      const dir = Math.random() < 0.5 ? 1 : -1;
+      const t0 = performance.now();
+      const frame = (now) => {
+        const p = (now - t0) / DUR;
+        ctx.clearRect(0, 0, W, H);
+        if (dead) return;
+        if (p >= 1) { timer = setTimeout(run, EVERY); return; }
+        const band = Math.max(160, W * 0.16);
+        const front = -band + p * (W + band * 2);
+        const cols = Math.ceil(W / CELL), rows = Math.ceil(H / CELL);
+        for (let r = 0; r < rows; r++) {
+          const wob = Math.sin(r * 0.38 + p * 9) * band * 0.45;
+          for (let c = 0; c < cols; c++) {
+            const x = c * CELL, y = r * CELL;
+            const d = Math.abs((dir > 0 ? x : W - x) - (front + wob));
+            if (d > band) continue;
+            let k = 1 - d / band;
+            k = k * k * (3 - 2 * k);
+            const h = ((r * 73856093) ^ (c * 19349663)) >>> 0;
+            if (h % 7 === 0 && k < 0.35) continue; // ragged, dissolving edge
+            const s = (CELL - 3) * (0.35 + 0.65 * k);
+            ctx.globalAlpha = k * 0.75;
+            ctx.fillStyle = h % 13 === 0 ? "#ff7a1a" : COLORS[h % COLORS.length];
+            ctx.fillRect(x + (CELL - s) / 2, y + (CELL - s) / 2, s, s);
+          }
+        }
+        ctx.globalAlpha = 1;
+        raf = requestAnimationFrame(frame);
+      };
+      raf = requestAnimationFrame(frame);
+    };
+    timer = setTimeout(run, FIRST);
+
+    return () => {
+      dead = true;
+      clearTimeout(timer);
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", size);
+    };
+  }, []);
+
+  return <canvas ref={ref} className={"pixwave" + (fixed ? " fixed" : "")} aria-hidden="true" />;
+}
 
 /* ---------- Theme button ---------- */
 export function ThemeBtn({ theme, toggle, t }) {
@@ -26,18 +99,6 @@ export function Ticker({ text }) {
   );
 }
 
-const HEX = [
-  // left%, top%, size, color class, delay
-  [6, 22, 120, "hx-n", 0],
-  [14, 62, 76, "hx-o", 1.2],
-  [82, 14, 96, "hx-g", 0.6],
-  [88, 58, 140, "hx-t", 2],
-  [70, 78, 64, "hx-k", 0.3],
-  [30, 10, 58, "hx-o", 1.8],
-  [48, 84, 90, "hx-n", 2.4],
-  [2, 80, 100, "hx-k", 0.9],
-];
-
 const BUB = [
   [-6, 58, 240, 0],
   [78, 4, 150, 2],
@@ -53,16 +114,9 @@ export default function Welcome({ t, lang, setLang, theme, toggleTheme, onStart,
   const [bn, ...rest] = t.app.split(" ");
   return (
     <div className={"welcome" + (ghost ? " ghost" : "")} {...(ghost ? { inert: "" } : {})}>
-      <div className="w-layer w-hex" />
       <div className="w-layer w-grid" />
       <div className="w-layer w-rings" />
-      {HEX.map(([l, tp, s, c, d], i) => (
-        <span
-          key={i}
-          className={"hx " + c}
-          style={{ left: l + "%", top: tp + "%", width: s, height: s * 1.1, animationDelay: d + "s" }}
-        />
-      ))}
+      {!ghost && <PixelWave />}
       <div className="bubbles" aria-hidden="true">
         {BUB.map(([l, tp, s, d], i) => (
           <span key={i} style={{ left: l + "%", top: tp + "%", width: s, height: s, animationDelay: d + "s" }} />
